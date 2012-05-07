@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Soundcloud Playlist Client</title>
+		<link rel="stylesheet" href="css/jasmine.css" />
+		<link rel="stylesheet" href="css/bootstrap.min.css" />
+		<style type="text/css">
+			.jasmine_reporter {
+				position: absolute;
+				right: 0;
+				top: 0;
+				z-index: 5;
+				max-width: 800px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container"></div>
+		<script src="require.js" type="text/javascript"></script>
+		<script type="text/javascript">
+		window.debug = false;
+		window.BASE_URL = '<set base url here>';
+
+		require(['PlaylistClient', 'testRunner'], function(PlaylistClient) {
+			var PlaylistClient = new PlaylistClient({
+				client_id: '1069a157bc543162973debfa7a51af88',
+				redirect_uri: 'http://95.211.24.241/soundcloud/callback.html'
+			});
+		});
+		</script>
+	</body>
+</html>
