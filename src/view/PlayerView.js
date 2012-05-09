@@ -118,6 +118,8 @@ define(
 				this.render();
 				this.$el.css('display', 'block');
 
+				this._regenBookmarklet();
+
 				// render an element for each track in the playlist
 				var trackIds = this.model.get('trackIds');
 				if( !_.isArray(trackIds) ) {
@@ -138,8 +140,6 @@ define(
 
 					this.trackAddElement(thisTrack);
 				}, this);
-
-				this._regenBookmarklet();
 			},
 			playerStart: function(ev) {
 				if(ev) {
