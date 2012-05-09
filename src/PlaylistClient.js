@@ -48,9 +48,7 @@ define(
 					'client_id',
 					'redirect_uri'
 				]) ); 
-				// SC.connect( _.bind(this.onConnect, this) );
-				// #####################
-				this.onConnect();
+				SC.connect( _.bind(this.onConnect, this) );
 			},
 			onConnect: function() {
 
