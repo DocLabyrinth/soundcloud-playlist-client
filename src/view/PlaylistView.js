@@ -2,19 +2,20 @@ define(
 	[
 		'use!lib/mustache',
 		'lib/backbone',
-		'text!tpl/Playlist.html'
+		'text!tpl/Playlist.html',
+		'view/ConfirmView'
 	],
-	function(Mustache, Backbone, PlaylistHTML) {
+	function(Mustache, Backbone, PlaylistHTML, ConfirmView) {
 		var PlaylistView = Backbone.View.extend({
 			events: {
 				'click .select-link': 'onSelectLinkClicked',
-				'click .delete-link': 'onDeleteLinkClicked',
-				'click .alert button.close': 'onCancelLinkClicked',
 				'click .soft-del-link': 'onSoftDelLinkClicked'
 			},
 			tagName: 'li',
 			listElem: null,
-			confDiv: null,
+
+			// view showing a confirmation before actually deleting
+			confView: null,
 
 			initialize: function() {
 				this.model.bind('destroy', this.remove, this);
@@ -23,9 +24,19 @@ define(
 				var rendered = Mustache.render( PlaylistHTML, this.model.toJSON() );
 				this.$el.html(rendered);
 
-				this.confDiv = this.$el.find('.alert-error');
-				// start with the delete confirmation div hidden
-				this.confDiv.hide();
+				// add the confirmation alert
+				this.confView = new ConfirmView({
+					confAction: _.bind(function() {
+						// remove the confirmation alert and destroy the playlist model
+						this.confView.remove();
+						this.model.destroy();
+					}, this),
+					confMsg: 'Really delete this playlist?',
+					linkText: 'Delete Playlist',
+				})
+				.render();
+
+				this.$el.append(this.confView.el);
 
 				return this;
 			},
@@ -35,19 +46,8 @@ define(
 				// the event will be rippled up to the collection which contains this model
 				this.model.trigger('selected', this.model);
 			},
-			// the real delete link inside the confirmation alert
-			onDeleteLinkClicked: function(ev) {
-				ev.preventDefault();
-
-				this.remove();
-				this.model.destroy();
-			},
-			// the X in the confirmation alert
-			onCancelLinkClicked: function(ev) {
-				this.confDiv.hide();
-			},
 			onSoftDelLinkClicked: function() {
-				this.confDiv.show();
+				this.confView.$el.show();
 			}
 		});
 
