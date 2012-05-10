@@ -48,7 +48,12 @@ define(
 					'client_id',
 					'redirect_uri'
 				]) ); 
-				SC.connect( _.bind(this.onConnect, this) );
+				/*
+				    disabled for now, we're not using any
+				    api calls which need an access token
+				*/
+			//	SC.connect( _.bind(this.onConnect, this) );
+				this.onConnect();
 			},
 			onConnect: function() {
 
