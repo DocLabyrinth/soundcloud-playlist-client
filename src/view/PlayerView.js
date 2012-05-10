@@ -16,7 +16,7 @@ define(
 			},
 
 			tagName: 'div',
-			className: 'span8',
+			className: 'span5',
 	
 			// the index in the playlist of the currently playing track
 			currTrackIdx: 0,
@@ -186,6 +186,8 @@ define(
 					this.playingSound.stop();
 					this.playingSound = null;
 				}
+
+				this._playerHighlightPlaying();
 			},
 			playerOnFinish: function() {
 				this.currTrackIdx++;
@@ -247,14 +249,15 @@ define(
 				this.isPlaying = false;
 			},
 			_playerHighlightPlaying: function() {
+				var trackItems = this.tracksElem.find('li');
+				trackItems.css('background', '#FFF');
+
 				if(this.isPlaying !== true) {
 					// nothing playing so unable to highlight
 					return;
 				}
 	
 				// give the currently playing track's element a pale background
-				var trackItems = this.tracksElem.find('li');
-				trackItems.css('background', '#FFF');
 				trackItems.eq(this.currTrackIdx).css('background', '#C4D4FF');
 			}
 		});
