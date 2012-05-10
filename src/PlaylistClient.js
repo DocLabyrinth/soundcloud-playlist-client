@@ -96,7 +96,6 @@ define(
 
 				this.playlists.fetch({
 					success: function(ret) {
-						console.log('got these back', ret);
 						// load information about referenced tracks
 						clientRef.tracksLoadAll(function() {
 							/*
