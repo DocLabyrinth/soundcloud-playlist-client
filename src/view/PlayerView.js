@@ -32,12 +32,22 @@ define(
 			// the ul element holding the tracklist
 			tracksElem: null,
 
+			/*
+			    Binding an event to a model sets the context of the event handler
+			    to the model object. We need to retain this view as the context
+			    and keep a reference to it so we can call unbind() when the
+			    playlist model gets switched.
+			*/
+			_boundRemoveFunction: null,
+
 			initialize: function() {
 				// the global track collection used when playing or loading tracks
 				this.tracksCollect = this.options.tracks;
 
 				// start hidden until a playlist is assigned
 				this.$el.css('display', 'none');
+
+				this._boundRemoveFunction = _.bind(this.onModelRemoved, this);
 			},
 			render: function() {
 				var rendVars = _.isUndefined(this.model) ? {} : this.model.toJSON();
@@ -51,6 +61,8 @@ define(
 				return this;
 			},
 			onModelRemoved: function() {
+				this.playerStop();
+				this.$el.hide();
 				this.undelegateEvents();
 			},
 			onTrackLoadSubmit: function() {
@@ -112,8 +124,16 @@ define(
 				this.tracksElem.append(elem);
 			},
 			playlistSwitch: function(playlist) {
+				if( !_.isUndefined(this.model) ) {
+					// avoid reacting to events on a model which is no longer being displayed
+					this.model.unbind('destroy', this._boundRemoveFunction);
+				}
+
 				// assign the given playlist and re-render
 				this.model = playlist;
+				this.model.bind('destroy', this._boundRemoveFunction);
+
+
 				this.$el.empty();
 				this.render();
 				this.$el.css('display', 'block');
